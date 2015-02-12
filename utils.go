@@ -24,18 +24,28 @@ func NewTopicPath(path string) (TopicPath, bool) {
 	//reorder or copy?
 	spl := make([]string, 0, len(split))
 	var tp TopicPath
-
 	for i := 0; i < len(split); i++ {
 		v := split[i]
 		if len(v) == 0 || v == "" {
 			continue
 		}
-		if v == "#" || v == "+" {
-			tp.Wildcard = true
-		}
-		if strings.Contains("+", v) && len(v) != 1 || strings.Contains("#", v) && len(v) != 1 {
+		if (strings.Contains(v, "+") && 1 != len(v)) || (strings.Contains(v, "#") && 1 != len(v)) {
 			return tp, false
 		}
+
+		if v == "#" {
+			if i < len(split)-1 {
+				return tp, false
+			} else {
+				tp.Wildcard = true
+			}
+		}
+
+		if v == "+" {
+
+			tp.Wildcard = true
+		}
+
 		spl = append(spl, v)
 	}
 	tp.Split = spl

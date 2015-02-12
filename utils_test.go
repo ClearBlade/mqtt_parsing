@@ -2,7 +2,6 @@ package mqtt_parsing
 
 import (
 	"fmt"
-	"log"
 	"testing"
 )
 
@@ -70,7 +69,7 @@ func Test_SlashAgnosticPlacement(t *testing.T) {
 
 func Test_NewTopicPath(t *testing.T) {
 	//test to check valid
-	tp, wildcard := NewTopicPath("/foo/bar/baz")
+	tp, valid := NewTopicPath("/foo/bar/baz")
 	if len(tp.Whole) < 1 {
 		t.Error("rejecting wildcard data")
 	}
@@ -79,23 +78,22 @@ func Test_NewTopicPath(t *testing.T) {
 	}
 
 	//testing to check inwildcard
-	tp, wildcard = NewTopicPath("/foo/#/baz")
-	if len(tp.Whole) < 1 {
-		log.Printf("%+v %+v\n", tp, wildcard)
+	tp, valid = NewTopicPath("/foo/#/baz")
+	if valid {
 		t.Error("accepting inwildcard topic /foo/#/baz")
 	}
 
-	tp, wildcard = NewTopicPath("/foo/+")
+	tp, valid = NewTopicPath("/foo/+")
 	if !tp.Wildcard {
 		t.Error("not identifying plus wildcard")
 	}
 
-	tp, wildcard = NewTopicPath("/foo/+/+")
+	tp, valid = NewTopicPath("/foo/+/+")
 	if !tp.Wildcard {
 		t.Error("Not identifying /foo/+/+ as wildcard")
 	}
 
-	tp, wildcard = NewTopicPath("/#")
+	tp, valid = NewTopicPath("/#")
 
 	if !tp.Wildcard {
 		t.Error("identifying wildcard as not wild")
@@ -104,11 +102,11 @@ func Test_NewTopicPath(t *testing.T) {
 		t.Error("this needs to be a length of 1")
 	}
 
-	tp, wildcard = NewTopicPath("foo/bar/#")
+	tp, valid = NewTopicPath("foo/bar/#")
 	if len(tp.Whole) < 1 {
 		t.Error("falsely rejecting foo/bar/#")
 	}
-	if !wildcard {
+	if !valid {
 		t.Error("falsely rejecting foo/bar/# topic as not a wildcard")
 	}
 
