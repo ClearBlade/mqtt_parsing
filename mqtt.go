@@ -268,7 +268,7 @@ func (c *Connect) Encode() []byte {
 	buf.WriteByte(c.Version)
 	var flagByte byte
 	//decent explination in the decode function
-	flagByte = byte(boolToUInt8(c.UsernameFlag)) << 7
+	flagByte |= byte(boolToUInt8(c.UsernameFlag)) << 7
 	flagByte |= byte(boolToUInt8(c.PasswordFlag)) << 6
 	flagByte |= byte(boolToUInt8(c.WillRetainFlag)) << 5
 	flagByte |= byte(c.WillQOS) << 3
