@@ -89,8 +89,8 @@ func Test_LargePacket(t *testing.T) {
 	}
 	wg := new(sync.WaitGroup)
 	for i := 0; i < 1000; i++ {
+		wg.Add(1)
 		go func() {
-			wg.Add(1)
 			slc := bytes.NewBuffer(pub.Encode())
 			_, err := DecodePacket(slc)
 			if err != nil {
